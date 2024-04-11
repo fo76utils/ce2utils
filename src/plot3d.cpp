@@ -416,7 +416,7 @@ void Plot3D_TriShape::drawPixel_Effect(Plot3D_TriShape& p, Fragment& z)
   if (p.textures[4])
     m = p.textures[4]->getPixelT(txtU, txtV, z.mipLevel + p.mipOffsets[4])[0];
   c.clearV3();
-  FloatVector4  f0(FloatVector4(0.04f) + (c * (m * 0.96f)));
+  FloatVector4  f0((c - 0.04f) * m + 0.04f);
   c *= (1.0f - m);
   c[3] = a;
   // Fresnel (coefficients are optimized for glass) with roughness
@@ -638,7 +638,7 @@ void Plot3D_TriShape::drawPixel_SF(Plot3D_TriShape& p, Fragment& z)
       p.textures[5]->getPixelT(txtU, txtV, z.mipLevel + p.mipOffsets[5])[0];
   float   a = c[3];
   c.clearV3();
-  FloatVector4  f0(FloatVector4(0.04f) + (c * (m * 0.96f)));
+  FloatVector4  f0((c - 0.04f) * m + 0.04f);
   c *= (1.0f - m);
   c[3] = a;
   float   smoothness = 1.0f - r;
