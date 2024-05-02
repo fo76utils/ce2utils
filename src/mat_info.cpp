@@ -249,7 +249,7 @@ int main(int argc, char **argv)
           throw FO76UtilsError("missing argument for %s", argv[i - 1]);
         cdbFileName = argv[i];
       }
-      if (std::strcmp(argv[i], "-o") == 0)
+      else if (std::strcmp(argv[i], "-o") == 0)
       {
         if (++i >= argc)
           throw FO76UtilsError("missing argument for %s", argv[i - 1]);
