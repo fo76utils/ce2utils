@@ -289,7 +289,7 @@ class NIFFile : public FileBuffer
   //     100: Skyrim
   //     130: Fallout 4
   //     155: Fallout 76
-  //     172: Starfield
+  // 172,173: Starfield
   unsigned int  bsVersion;
   unsigned int  blockCnt;
   size_t    *blockOffsets;              // blockCnt + 1 elements

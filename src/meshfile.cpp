@@ -1,7 +1,7 @@
 
 // Starfield .mesh file format:
 //
-// uint32               Always 1, possibly format version.
+// uint32               Format version, 1 or 2.
 // uint32               Number of triangles (triCnt) * 3.
 // uint16 * triCnt * 3  Vertex list for each triangle. Vertices are
 //                      in CCW order on the front face of the triangle,
@@ -58,7 +58,7 @@ void readStarfieldMeshFile(std::vector< NIFFile::NIFVertex >& vertexData,
 {
   vertexData.clear();
   triangleData.clear();
-  if (buf.readUInt32() != 1U)
+  if ((buf.readUInt32() - 1U) & ~1U)
     errorMessage("unsupported mesh file version");
   unsigned int  triangleCnt = buf.readUInt32();
   if ((triangleCnt % 3U) != 0U)
