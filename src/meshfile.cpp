@@ -39,14 +39,33 @@
 // } * n3
 // -------------------  The remaining data is optional, the file may end here.
 // uint32               Number of meshlets (n5).
-// n5 * 16 bytes        Meshlet data.
-// uint32               Number of bounding spheres (bndCnt).
 // {
-//     float32          Bounding sphere center X.
-//     float32          Bounding sphere center Y.
-//     float32          Bounding sphere center Z.
-//     float32          Bounding sphere radius.
-//     8 bytes          Unknown data.
+//     uint32           Vertex count, the maximum is 128 for version 1, and
+//                      96 for version 2.
+//     uint32           Vertex offset.
+//     uint32           Triangle count, the maximum is 128.
+//     uint32           Triangle offset.
+// } * n5
+// uint32               Number of bounds (bndCnt) for culling, should be equal
+//                      to the number of meshlets.
+// {
+//   Version 1:
+//     {
+//         float32      Bounding sphere center X.
+//         float32      Bounding sphere center Y.
+//         float32      Bounding sphere center Z.
+//         float32      Bounding sphere radius.
+//         8 bytes      Unknown data.
+//     }
+//   Version 2:
+//     {
+//         float32      Bounding box center X.
+//         float32      Bounding box center Y.
+//         float32      Bounding box center Z.
+//         float32      Bounding box width / 2.
+//         float32      Bounding box depth / 2.
+//         float32      Bounding box height / 2.
+//     }
 // } * bndCnt
 
 #include "common.hpp"
