@@ -19,7 +19,7 @@ class ESMView : public ESMDump, public SDLDisplay
   void formatJSONData(std::string& s) const;
  public:
   ESMView(const char *fileName, const char *archivePath,
-          int w = 1152, int h = 648, int l = 36, int downsampleLevel = 1,
+          int w = 1152, int h = 648, int l = 36, int downsampLevel = 1,
           unsigned char bgColor = 0xE6, unsigned char fgColor = 0x00);
   virtual ~ESMView();
   void loadStrings(const char *stringsPrefix);
@@ -224,7 +224,7 @@ void ESMView::formatJSONData(std::string& s) const
   }
 }
 
-static bool archiveFilterFunction(void *p, const std::string& s)
+static bool archiveFilterFunction(void *p, const std::string_view& s)
 {
   (void) p;
 #ifdef HAVE_SDL2
@@ -241,7 +241,7 @@ static bool archiveFilterFunction(void *p, const std::string& s)
 
 ESMView::ESMView(
     const char *fileName, const char *archivePath, int w, int h, int l,
-    int downsampleLevel, unsigned char bgColor, unsigned char fgColor)
+    int downsampLevel, unsigned char bgColor, unsigned char fgColor)
   : ESMDump(fileName, (std::FILE *) 0),
 #ifdef HAVE_SDL2
     SDLDisplay(w, h, "esmview", 4U, l),
@@ -253,13 +253,13 @@ ESMView::ESMView(
 #endif
 {
 #ifdef HAVE_SDL2
-  setDownsampleLevel(downsampleLevel);
+  setDownsampleLevel(downsampLevel);
   setDefaultTextColor(bgColor, fgColor);
 #else
   (void) w;
   (void) h;
   (void) l;
-  (void) downsampleLevel;
+  (void) downsampLevel;
   (void) bgColor;
   (void) fgColor;
 #endif

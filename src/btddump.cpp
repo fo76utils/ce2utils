@@ -168,9 +168,9 @@ static void loadPalette(unsigned long long *buf, const char *fileName)
   }
 }
 
-static bool archiveFilterFunction(void *p, const std::string& s)
+static bool archiveFilterFunction(
+    [[maybe_unused]] void *p, const std::string_view& s)
 {
-  (void) p;
   return s.ends_with(".btd");
 }
 

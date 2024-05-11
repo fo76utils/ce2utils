@@ -138,21 +138,20 @@ static void loadMaterialPaths(
     const std::vector< std::string >& includePatterns,
     const std::vector< std::string >& excludePatterns)
 {
-  std::set< std::string > matPaths;
+  std::set< std::string_view >  matPaths;
   for (size_t i = 1; i < args.size(); i++)
-    matPaths.insert(args[i]);
+    matPaths.emplace(args[i]);
   args.resize(1);
-  materials.getMaterialList(matPaths);
-  for (std::set< std::string >::const_iterator
-           i = matPaths.begin(); i != matPaths.end(); i++)
+  AllocBuffers  stringBuf;
+  materials.getMaterialList(matPaths, stringBuf);
+  for (const auto& i : matPaths)
   {
     if (includePatterns.begin() != includePatterns.end())
     {
       bool    foundMatch = false;
-      for (std::vector< std::string >::const_iterator
-               j = includePatterns.begin(); j != includePatterns.end(); j++)
+      for (const auto& j : includePatterns)
       {
-        if (i->find(*j) != std::string::npos)
+        if (i.find(j) != std::string_view::npos)
         {
           foundMatch = true;
           break;
@@ -162,21 +161,20 @@ static void loadMaterialPaths(
         continue;
     }
     bool    foundMatch = true;
-    for (std::vector< std::string >::const_iterator
-             j = excludePatterns.begin(); j != excludePatterns.end(); j++)
+    for (const auto& j : excludePatterns)
     {
-      if (i->find(*j) != std::string::npos)
+      if (i.find(j) != std::string_view::npos)
       {
         foundMatch = false;
         break;
       }
     }
     if (foundMatch)
-      args.push_back(*i);
+      args.emplace_back(i);
   }
 }
 
-static bool archiveFilterFunction(void *p, const std::string& s)
+static bool archiveFilterFunction(void *p, const std::string_view& s)
 {
 #ifdef HAVE_SDL2
   if (p && (s.ends_with(".dds") || s.ends_with(".mesh") || s.ends_with(".nif")))

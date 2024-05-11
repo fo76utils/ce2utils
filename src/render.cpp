@@ -2255,7 +2255,7 @@ void Renderer::loadTerrain(const char *btdFileName, unsigned int worldID,
       int     mipLevelN = mipLevelD;
       if (!j)
       {
-        fileSizeD = ba2File.getFileSize(fileName);
+        fileSizeD = long(ba2File.getFileSize(fileName));
         if (!enableTextures)
         {
           landTextures[i][j] = &whiteTexture;
@@ -2264,7 +2264,7 @@ void Renderer::loadTerrain(const char *btdFileName, unsigned int worldID,
       }
       else if (fileSizeD > 0L)
       {
-        long    fileSizeN = ba2File.getFileSize(fileName);
+        long    fileSizeN = long(ba2File.getFileSize(fileName));
         mipLevelN += (calculateLandTxtMip(fileSizeN)
                       - calculateLandTxtMip(fileSizeD));
         mipLevelN = (mipLevelN > 0 ? (mipLevelN < 15 ? mipLevelN : 15) : 0);
