@@ -194,7 +194,7 @@ int main(int argc, char **argv)
   try
   {
     BA2File ba2File(argv[4], &archiveFilterFunction);
-    std::vector< unsigned char >  btdBuf;
+    BA2File::UCharArray btdBuf;
     const unsigned char *btdFileData = (unsigned char *) 0;
     size_t  btdFileSize =
         ba2File.extractFile(btdFileData, btdBuf, std::string(argv[1]));

@@ -19,7 +19,7 @@ Renderer_Base::TextureCache::~TextureCache()
 
 const DDSTexture16 * Renderer_Base::TextureCache::loadTexture(
     const BA2File& ba2File, const std::string& fileName,
-    std::vector< unsigned char >& fileBuf, int mipLevel, bool *waitFlag)
+    BA2File::UCharArray& fileBuf, int mipLevel, bool *waitFlag)
 {
   if (fileName.empty())
     return nullptr;
@@ -94,21 +94,20 @@ const DDSTexture16 * Renderer_Base::TextureCache::loadTexture(
   try
   {
     mipLevel = ba2File.extractTexture(fileBuf, fileName, mipLevel);
-    size_t  fileBufSize = fileBuf.size();
+    size_t  fileBufSize = fileBuf.size;
     if (fileBufSize >= 148 &&
         (fileBuf[113] & 0x02) != 0 &&   // DDSCAPS2_CUBEMAP
-        fileBuf[128] != 0x43)           // DXGI_FORMAT_R9G9B9E5_SHAREDEXP
-    {
+        (fileBuf[128] != 0x43 || fileBuf[28] < 2))
+    {           // not DXGI_FORMAT_R9G9B9E5_SHAREDEXP, or mipmap count < 2
       SFCubeMapFilter cubeMapFilter(256);
       size_t  bufCapacityRequired = 256 * 256 * 8 * sizeof(std::uint32_t) + 148;
-      if (fileBufSize < bufCapacityRequired)
-        fileBuf.resize(bufCapacityRequired);
+      fileBuf.reserve(bufCapacityRequired);
       size_t  newSize =
-          cubeMapFilter.convertImage(fileBuf.data(), fileBufSize, true,
+          cubeMapFilter.convertImage(fileBuf.data, fileBufSize, true,
                                      bufCapacityRequired);
-      fileBuf.resize(newSize ? newSize : fileBufSize);
+      fileBuf.size = (newSize ? newSize : fileBufSize);
     }
-    t = new DDSTexture16(fileBuf.data(), fileBuf.size(), mipLevel);
+    t = new DDSTexture16(fileBuf.data, fileBuf.size, mipLevel);
     cachedTexture->texture = t;
     textureCacheMutex.lock();
     textureDataSize = textureDataSize + getTextureDataSize(t);

@@ -266,7 +266,7 @@ void NIF_View::loadModel(const std::string& fileName, int l)
     return;
   bool    isMaterialFile =
       (fileName.starts_with("materials/") && fileName.ends_with(".mat"));
-  std::vector< unsigned char >& fileBuf = threadFileBuffers[0];
+  BA2File::UCharArray&  fileBuf = threadFileBuffers[0];
   if (isMaterialFile)
   {
     ba2File.extractFile(fileBuf,
@@ -277,7 +277,7 @@ void NIF_View::loadModel(const std::string& fileName, int l)
   {
     ba2File.extractFile(fileBuf, fileName);
   }
-  nifFile = new NIFFile(fileBuf.data(), fileBuf.size(), ba2File, &materials, l);
+  nifFile = new NIFFile(fileBuf.data, fileBuf.size, ba2File, &materials, l);
   try
   {
     nifFile->getMesh(meshData);

@@ -265,10 +265,10 @@ LandscapeData::LandscapeData(
   }
   if (ba2File)
   {
-    std::vector< unsigned char >  btdBuf;
+    BA2File::UCharArray btdBuf;
     const unsigned char *btdFileData = (unsigned char *) 0;
     size_t  btdFileSize =
-        ba2File->extractFile(btdFileData, btdBuf, std::string(s));
+        ba2File->extractFile(btdFileData, btdBuf, std::string_view(s));
     loadBTDFile(btdFileData, btdFileSize, l);
   }
   else

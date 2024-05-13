@@ -85,7 +85,7 @@ static int dumpCDBFiles(
 {
   if (!fileName || fileName[0] == '\0')
     fileName = BSReflStream::getDefaultMaterialDBPath();
-  std::vector< unsigned char >  cdbBuf;
+  BA2File::UCharArray cdbBuf;
   std::string stringBuf;
   std::string errMsgBuf;
   while (true)
@@ -93,8 +93,8 @@ static int dumpCDBFiles(
     size_t  len = 0;
     while (fileName[len] != ',' && fileName[len] != '\0')
       len++;
-    ba2File.extractFile(cdbBuf, std::string(fileName, len));
-    BSReflDump  cdbFile(cdbBuf.data(), cdbBuf.size());
+    ba2File.extractFile(cdbBuf, std::string_view(fileName, len));
+    BSReflDump  cdbFile(cdbBuf.data, cdbBuf.size);
     try
     {
       cdbFile.readAllChunks(stringBuf, 0, true);

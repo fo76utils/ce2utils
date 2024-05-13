@@ -297,7 +297,7 @@ class NIFFile : public FileBuffer
   const BA2File&  ba2File;
   std::vector< std::string >  stringTable;
   std::string   stringBuf;
-  std::vector< unsigned char >  meshBuf;
+  BA2File::UCharArray meshBuf;
   // authorName, processScriptName, exportScriptName
   std::vector< std::string >  headerStrings;
   void readString(std::string& s, size_t stringLengthSize);

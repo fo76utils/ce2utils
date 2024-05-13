@@ -306,7 +306,7 @@ NIFFile::NIFBlkBSTriShape::NIFBlkBSTriShape(NIFFile& f, int l)
     }
     while (--l >= 0);
     f.ba2File.extractFile(f.meshBuf, meshFileName);
-    FileBuffer  tmpBuf(f.meshBuf.data(), f.meshBuf.size());
+    FileBuffer  tmpBuf(f.meshBuf.data, f.meshBuf.size);
     readStarfieldMeshFile(vertexData, triangleData, tmpBuf);
     if (vertexData.size() != vertexCnt ||
         triangleData.size() != (triangleCntx3 / 3U))
