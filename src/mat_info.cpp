@@ -354,7 +354,18 @@ int main(int argc, char **argv)
           if (args.size() > 2)
             std::printf("%s\n", args[i].c_str());
           if (ba2File.findFile(args[i]))
-            (void) materials.loadMaterial(args[i]);
+          {
+            try
+            {
+              (void) materials.loadMaterial(args[i]);
+            }
+            catch (FO76UtilsError& e)
+            {
+              std::fprintf(stderr, "mat_info: %s: error loading material: %s\n",
+                           args[i].c_str(), e.what());
+              continue;
+            }
+          }
           materials.getJSONMaterial(tmpBuf, args[i]);
           if (tmpBuf.empty())
           {
@@ -432,7 +443,17 @@ int main(int argc, char **argv)
     std::string stringBuf;
     for (size_t i = 1; i < args.size(); i++)
     {
-      const CE2Material *o = materials.loadMaterial(args[i]);
+      const CE2Material *o;
+      try
+      {
+        o = materials.loadMaterial(args[i]);
+      }
+      catch (FO76UtilsError& e)
+      {
+        std::fprintf(stderr, "mat_info: %s: error loading material: %s\n",
+                     args[i].c_str(), e.what());
+        continue;
+      }
       if (!o)
       {
         std::fprintf(stderr, "Material '%s' not found in the database\n",
