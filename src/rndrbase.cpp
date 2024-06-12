@@ -18,7 +18,7 @@ Renderer_Base::TextureCache::~TextureCache()
 }
 
 const DDSTexture16 * Renderer_Base::TextureCache::loadTexture(
-    const BA2File& ba2File, const std::string& fileName,
+    const BA2File& ba2File, const std::string_view& fileName,
     BA2File::UCharArray& fileBuf, int mipLevel, bool *waitFlag)
 {
   if (fileName.empty())

@@ -58,7 +58,7 @@ struct Renderer_Base
     // returns NULL on failure
     // *waitFlag is set to true if the texture is locked by another thread
     const DDSTexture16 *loadTexture(const BA2File& ba2File,
-                                    const std::string& fileName,
+                                    const std::string_view& fileName,
                                     BA2File::UCharArray& fileBuf,
                                     int mipLevel, bool *waitFlag = nullptr);
     void shrinkTextureCache();

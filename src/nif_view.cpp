@@ -155,7 +155,7 @@ void NIF_View::threadFunction(NIF_View *p, size_t n)
   }
 }
 
-const DDSTexture16 * NIF_View::loadTexture(const std::string& texturePath,
+const DDSTexture16 * NIF_View::loadTexture(const std::string_view& texturePath,
                                            size_t threadNum)
 {
   const DDSTexture16  *t =

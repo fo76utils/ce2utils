@@ -34,7 +34,7 @@ class NIF_View : protected Renderer_Base
   DDSTexture16  defaultTexture;
   CE2MaterialDB materials;
   static void threadFunction(NIF_View *p, size_t n);
-  const DDSTexture16 *loadTexture(const std::string& texturePath,
+  const DDSTexture16 *loadTexture(const std::string_view& texturePath,
                                   size_t threadNum = 0);
   void setDefaultTextures(int envMapNum = 0);
  public:

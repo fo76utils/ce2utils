@@ -72,8 +72,8 @@ static void loadTextures(
     for (size_t i = 0; i < landData->getTextureCount(); i++)
     {
       const CE2Material *m = landData->getTextureMaterial(i);
-      const std::string *s0 = (std::string *) 0;
-      const std::string *s2 = (std::string *) 0;
+      const std::string_view  *s0 = nullptr;
+      const std::string_view  *s2 = nullptr;
       if (m && m->layerMask)
       {
         const CE2Material::Layer  *l =
@@ -89,11 +89,11 @@ static void loadTextures(
       if (!s0)
         fileNames.emplace_back();
       else
-        fileNames.push_back(*s0);
+        fileNames.emplace_back(*s0);
       if (!s2)
         fileNames2.emplace_back();
       else
-        fileNames2.push_back(*s2);
+        fileNames2.emplace_back(*s2);
     }
   }
   if (fileNames.size() < 1)
@@ -161,7 +161,7 @@ RenderThread::RenderThread(
     const LandscapeTextureSet *landTxts, size_t landTxtCnt)
   : LandscapeTexture(txtSetPtr, ltex16Ptr, vertexCntX, vertexCntY,
                      cellResolution, landTxts, landTxtCnt),
-    threadPtr((std::thread *) 0),
+    threadPtr(nullptr),
     xyScale(0)
 {
 }
@@ -170,7 +170,7 @@ RenderThread::RenderThread(
     const LandscapeData& landData,
     const LandscapeTextureSet *landTxts, size_t landTxtCnt)
   : LandscapeTexture(landData, landTxts, landTxtCnt),
-    threadPtr((std::thread *) 0),
+    threadPtr(nullptr),
     xyScale(0)
 {
 }
@@ -189,7 +189,7 @@ void RenderThread::renderLines(int y0, int y1)
   outBuf.resize(size_t(width << xyScale) * size_t(y1 - y0) * 4U);
   unsigned char *outBufs[8];
   for (size_t i = 0; i < 8; i++)
-    outBufs[i] = (unsigned char *) 0;
+    outBufs[i] = nullptr;
   outBufs[0] = outBuf.data();
   renderTexture(outBufs, xyScale,
                 0, y0 >> xyScale, width - 1, (y1 >> xyScale) - 1);
@@ -222,7 +222,7 @@ static const char *usageStrings[] =
   "    -w FORMID           form ID of world to use from ESM input file",
   "    -r X0 Y0 X1 Y1      limit range of cells to X0,Y0 (SW) to X1,Y1 (NE)",
   "    -l INT              level of detail to use from BTD file (0 to 4)",
-  (char *) 0
+  nullptr
 };
 
 static bool archiveFilterFunction(void *p, const std::string_view& s)
@@ -241,12 +241,12 @@ int main(int argc, char **argv)
 {
   std::vector< LandscapeTextureSet >  landTextures;
   std::vector< RenderThread * > threads;
-  DDSInputFile  *inFile = (DDSInputFile *) 0;
-  DDSInputFile  *txtSetFile = (DDSInputFile *) 0;
-  ESMFile       *esmFile = (ESMFile *) 0;
-  BA2File       *ba2File = (BA2File *) 0;
-  CE2MaterialDB *materials = (CE2MaterialDB *) 0;
-  LandscapeData *landData = (LandscapeData *) 0;
+  DDSInputFile  *inFile = nullptr;
+  DDSInputFile  *txtSetFile = nullptr;
+  ESMFile       *esmFile = nullptr;
+  BA2File       *ba2File = nullptr;
+  CE2MaterialDB *materials = nullptr;
+  LandscapeData *landData = nullptr;
   int     err = 1;
   try
   {
@@ -258,8 +258,8 @@ int main(int argc, char **argv)
     threadCnt = (threadCnt > 1 ? (threadCnt < 256 ? threadCnt : 256) : 1);
     bool          verboseMode = true;
     unsigned char txtSetMip = 0;
-    const char    *archivePath = (char *) 0;
-    const char    *btdFileName = (char *) 0;
+    const char    *archivePath = nullptr;
+    const char    *btdFileName = nullptr;
     unsigned int  worldFormID = 0U;
     int           xMin = -32768;
     int           yMin = -32768;
@@ -385,7 +385,7 @@ int main(int argc, char **argv)
         std::fprintf(stderr, "%s\n", usageStrings[i]);
       return err;
     }
-    threads.resize(size_t(threadCnt), (RenderThread *) 0);
+    threads.resize(size_t(threadCnt), nullptr);
 
     if (archivePath)
     {
@@ -425,7 +425,7 @@ int main(int argc, char **argv)
         if (++txtSetMip >= 8)
           errorMessage("texture set dimensions do not match input file");
       }
-      loadTextures(landTextures, args[3], (LandscapeData *) 0, verboseMode,
+      loadTextures(landTextures, args[3], nullptr, verboseMode,
                    int(mipLevel), ba2File);
     }
     else
@@ -449,7 +449,7 @@ int main(int argc, char **argv)
       hdrBuf[8] = (unsigned int) roundFloat(landData->getWaterLevel());
       hdrBuf[9] = (unsigned int) landData->getCellResolution();
       hdrBuf[10] = 0U;
-      loadTextures(landTextures, (char *) 0, landData, verboseMode,
+      loadTextures(landTextures, nullptr, landData, verboseMode,
                    int(mipLevel), ba2File);
     }
     mipLevel = mipLevel - float(int(mipLevel));
@@ -486,7 +486,7 @@ int main(int argc, char **argv)
       threads[i]->xyScale = xyScale;
     }
     std::vector< std::uint32_t >  downsampleBuf;
-    std::uint32_t *lineBuf = (std::uint32_t *) 0;
+    std::uint32_t *lineBuf = nullptr;
     int     h = 1 << xyScale;
     h = (h > 32 ? h : 32);
     if (ssaaLevel > 0)
@@ -512,7 +512,7 @@ int main(int argc, char **argv)
       {
         threads[i]->threadPtr->join();
         delete threads[i]->threadPtr;
-        threads[i]->threadPtr = (std::thread *) 0;
+        threads[i]->threadPtr = nullptr;
         if (!ssaaLevel)
         {
           for (size_t j = 0; (j + 4) <= threads[i]->outBuf.size(); j = j + 4)

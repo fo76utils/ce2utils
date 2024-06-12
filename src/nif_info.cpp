@@ -359,7 +359,7 @@ static void printMTLTexture(std::FILE *f, const char *textureName,
       !txtSet->texturePaths[n]->empty())
   {
     std::fprintf(f, "map_%s %s\n",
-                 textureName, txtSet->texturePaths[n]->c_str());
+                 textureName, txtSet->texturePaths[n]->data());
   }
   else if (n == 3 || n == 4)
   {

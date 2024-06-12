@@ -2251,7 +2251,7 @@ void Renderer::loadTerrain(const char *btdFileName, unsigned int worldID,
       }
       if (!(txtSet && (txtSet->texturePathMask & (1U << j))))
         continue;
-      const std::string&  fileName = *(txtSet->texturePaths[j]);
+      const std::string_view& fileName = *(txtSet->texturePaths[j]);
       int     mipLevelN = mipLevelD;
       if (!j)
       {
