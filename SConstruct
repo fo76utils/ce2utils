@@ -19,7 +19,7 @@ if "win" in sys.platform:
 else:
     env.Append(LIBS = ["pthread"])
 if int(ARGUMENTS.get("debug", 0)):
-    env.Append(CCFLAGS = Split("-g -Og"))
+    env.Append(CCFLAGS = Split("-Og -ggdb"))
 elif int(ARGUMENTS.get("profile", 0)):
     env.Append(CCFLAGS = Split("-g -pg -O"))
     env.Prepend(LINKFLAGS = ["-pg"])
