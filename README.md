@@ -57,6 +57,15 @@ Can be built with MSYS2 (https://www.msys2.org/) on 64-bit Windows, and also on 
 * If Visual Studio is also installed on the system, **tools=mingw** needs to be added to the scons options.
 * Optionally, for the makemap and icon extraction scripts only, download and install [ImageMagick](https://imagemagick.org/script/download.php#windows) and [SWFTools](http://www.swftools.org/download.html).
 
+### Building the source code on macOS
+
+* Install Xcode from the App Store.
+* Install the Xcode command line tools by running **xcode-select --install** in the terminal.
+* Install [Homebrew](https://brew.sh/).
+* Install the required packages with **brew install scons sdl2 swig**.
+* Use the same **scons -j 8** command to compile the utilities.
+* Optionally, with Apple Silicon, you can use "apple-m1=1" or "apple-m2=1" to enable the M1 or M2 architecture, respectively.
+
 #### Example 1
 
     ./btddump terrain/newatlantis.btd newatlantis_hmap.dds 0 Starfield/Data
