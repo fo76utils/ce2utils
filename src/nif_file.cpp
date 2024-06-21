@@ -299,15 +299,25 @@ NIFFile::NIFBlkBSTriShape::NIFBlkBSTriShape(NIFFile& f, int l)
         errorMessage("invalid vertex or triangle data size in NIF file");
       if (f.readUInt32() != 0x40U)
         errorMessage("invalid or unsupported BSGeometry data in NIF file");
-      unsigned int  meshPathLen = f.readUInt32();
-      f.readPath(meshFileName, meshPathLen, "geometries/", ".mesh");
-      if (f.getPosition() >= f.size() || f.readUInt8Fast() == 0x00)
-        break;
+      if (flags & 0x0200)
+      {
+        readStarfieldMeshFile(vertexData, triangleData, f);
+      }
+      else
+      {
+        unsigned int  meshPathLen = f.readUInt32();
+        f.readPath(meshFileName, meshPathLen, "geometries/", ".mesh");
+        if (f.getPosition() >= f.size() || f.readUInt8Fast() == 0x00)
+          break;
+      }
     }
     while (--l >= 0);
-    f.ba2File.extractFile(f.meshBuf, meshFileName);
-    FileBuffer  tmpBuf(f.meshBuf.data, f.meshBuf.size);
-    readStarfieldMeshFile(vertexData, triangleData, tmpBuf);
+    if (!(flags & 0x0200))
+    {
+      f.ba2File.extractFile(f.meshBuf, meshFileName);
+      FileBuffer  tmpBuf(f.meshBuf.data, f.meshBuf.size);
+      readStarfieldMeshFile(vertexData, triangleData, tmpBuf);
+    }
     if (vertexData.size() != vertexCnt ||
         triangleData.size() != (triangleCntx3 / 3U))
     {

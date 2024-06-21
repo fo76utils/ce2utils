@@ -1,7 +1,7 @@
 
 // Starfield .mesh file format:
 //
-// uint32               Format version, 1 or 2.
+// uint32               Format version, 0 to 2.
 // uint32               Number of triangles (triCnt) * 3.
 // uint16 * triCnt * 3  Vertex list for each triangle. Vertices are
 //                      in CCW order on the front face of the triangle,
@@ -32,7 +32,7 @@
 //                                       11 if bitangent = normal x tangent
 // uint32               Number of vertex weights, n2 = vCnt * weightsPerVertex.
 // uint32 * n2          Vertex weights * 2^32-1 as 32-bit integers (optional).
-// uint32               Number of LODs (n3), usually 0.
+// uint32               Number of LODs (n3) for version >= 1 only, usually 0.
 // {
 //     uint32           Number of LOD triangles * 3 (n4).
 //     uint16 * n4      Vertex list for LOD triangles.
@@ -77,7 +77,8 @@ void readStarfieldMeshFile(std::vector< NIFFile::NIFVertex >& vertexData,
 {
   vertexData.clear();
   triangleData.clear();
-  if ((buf.readUInt32() - 1U) & ~1U)
+  std::uint32_t meshVersion = buf.readUInt32();
+  if (meshVersion > 2U)
     errorMessage("unsupported mesh file version");
   unsigned int  triangleCnt = buf.readUInt32();
   if ((triangleCnt % 3U) != 0U)
@@ -190,5 +191,29 @@ void readStarfieldMeshFile(std::vector< NIFFile::NIFVertex >& vertexData,
       buf.setPosition(buf.getPosition() + ((vertexWeightCnt - 1U) << 2));
     }
   }
+
+  // skip LOD, meshlet and cull data
+  if (meshVersion)
+  {
+    n = buf.readUInt32();
+    for (size_t i = 0; i < n; i++)
+    {
+      size_t  newPos = buf.readUInt32();
+      newPos = buf.getPosition() + (newPos * 2);
+      if (newPos > buf.size())
+        errorMessage("unexpected end of mesh file");
+      buf.setPosition(newPos);
+    }
+  }
+  if (buf.getPosition() >= buf.size())
+    return;
+  n = buf.readUInt32();
+  if ((buf.getPosition() + (size_t(n) * 16)) > buf.size())
+    errorMessage("unexpected end of mesh file");
+  buf.setPosition(buf.getPosition() + (size_t(n) * 16));
+  n = buf.readUInt32();
+  if ((buf.getPosition() + (size_t(n) * 24)) > buf.size())
+    errorMessage("unexpected end of mesh file");
+  buf.setPosition(buf.getPosition() + (size_t(n) * 24));
 }
 
